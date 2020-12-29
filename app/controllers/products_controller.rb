@@ -5,25 +5,22 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
      @products = Product.all
+
+     respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ReportPdf.new(@products)
+        send_data pdf.render, filename: 'report.pdf', type: 'application/pdf',
+         disposition: "inline"
+      end
+    end
   end
 
   # GET /products/1
   # GET /products/1.json
+
   def show
     @products = Product.find(params[:id])
-    
-    respond_to do |format|
-      format.html
-      format.pdf do
-        #  pdf = ReportPdf.new(@products)
-        # pdf.text "Hello World"
-        # send_data pdf.render, filename: 'report.pdf', type: 'application/pdf', 
-        # disposition: 'inline'
-
-        pdf = ProductPdf.new
-        send_data pdf.render, filename: "report.pdf", type: "application/pdf", disposition: "inline"
-      end
-    end
   end
 
   # GET /products/new
